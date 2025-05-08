@@ -22,6 +22,6 @@ const api : AxiosInstance =  axios.create({
     headers: headers
   
 })
-console.log(api===null?"yes ":"no");
+console.log(api!==null?"axios api instance created ":" axios api instance does not exist");
 
 export default api
