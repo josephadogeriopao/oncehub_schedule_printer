@@ -1,7 +1,9 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import getCST from "../../utils/getCST";
 import getBookingHub from "../../utils/getBookingHub";
-
+import { getLocation } from "../../utils/getLocation";
+import { getHostName } from "../../utils/getHostName";
+import { getCustomerName } from "../../utils/getCustomerName";
 
 const columnHelper = createColumnHelper();
 
@@ -15,20 +17,24 @@ export const columnDef = [
     header: "Calendar",
   },
   {
-    accessorKey: "host_name",
+    accessorFn: (row)=>getHostName(row.owner),
     header: "Host",
   },
   {
-    accessorKey: "customer_name",
+    accessorFn: (row)=>getCustomerName(row.contact),
     header: "Customer",
   },
    {
     accessorFn: (row)=>row.attendees[1],
-    header: "Customer",
+    header: "Email",
   },
   {
     accessorKey: "subject",
     header: "Appointment type",
+  },
+  {
+    accessorFn: (row)=>getLocation(row.virtual_conferencing,row.location_description),
+    header: "Location",
   },
   {
     accessorKey: "status",

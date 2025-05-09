@@ -1,64 +1,53 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from './configs/axios';
 import Footer from './layouts/Footer';
 import Header from './layouts/Header';
-import getBookingHub from './utils/getBookingHub';
 import BasicTable from './components/tables/BasictTable';
-
-import useResults from './hooks/useResults';
-import { getUserName } from './utils/getUserName';
-import { getCustomerName } from './utils/getCustomerName';
+import DatePicker from "react-datepicker";
+import { convertToUTCFormat } from './utils/convertToUTCFormat';
 function App() {
-  const [searchApi, results, errorMessage] = useResults();
+  const [date, setDate] = useState<Date | null>(new Date());
+
 
   const [data, setData] = useState<any>(null);
 
-  const handleClick = async () =>{
+  const fetchBookings = async ()=>{
     try{
-      const bookingResponse = await api.get("/bookings?limit=100")
+      const bookingResponse = await api.get(`/bookings?expand=contact,owner&limit=100&starting_time.gt=${convertToUTCFormat(date)}`)
       let bookingResults = await bookingResponse.data;
       console.log("user results ==",bookingResults)
-
-      setData(bookingResults.data);
-      const userResponse = await api.get("/users?limit=100");
-      const userResults = await userResponse.data;
-      console.log("user results ==",userResults)
-
-      const contactResponse = await api.get("/contacts?limit=100");
-      const contactResults = await contactResponse.data; 
-      console.log("contact results ==",contactResults)
-      let updatedBookings : any[] | null = null;
-      updatedBookings = bookingResults.data.map((booking : any)=>{
-        //console.log(booking)
-        booking["host_name"] = getUserName(booking.owner, userResults.data);
-        booking["customer_name"] = getCustomerName(booking.contact, contactResults.data)
-        return booking
-  
-      })
-
-      setData(updatedBookings)
+      setData(bookingResults.data)
 
   }catch(e){
     console.log(e)
   }
 
-
   }
+
+  useEffect(()=>{
+    fetchBookings();
+
+  },[])
+
+
   return (
 
     <>
     <Header/>
     <div className="App">
         <header className="App-header">
-          <button onClick={handleClick} style={{width: 100, height:50, backgroundColor:"red"}}>
+          <button 
+            onClick={()=>{fetchBookings()}} 
+            style={{width: 100, height:50, backgroundColor:"red"}}>
             fetch data
 
           </button>
+          <DatePicker selected={date} onChange={(date) => setDate(date)} />
+
           {data?
           <BasicTable dataJSON={data}/> :<></>
           }
-
-
+          
         </header>
       </div>
       <Footer/>

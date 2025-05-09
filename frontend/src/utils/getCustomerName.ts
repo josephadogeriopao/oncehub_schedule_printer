@@ -1,22 +1,14 @@
+import getPlaceHolder from "./getPlaceHolder";
 
-export const getCustomerName = (contactID : string,contacts : any[]) => {
-    let customer : string | null = null;
-    for( let contact of contacts){
-      if (contact?.id === contactID){
-        if(!contact.custom_fields.name){
-            customer = `${contact.first_name} ${contact.last_name}` 
-            break;
+export const getCustomerName = (contact : any) => {
 
-        }else{
-            customer = contact.custom_fields.name 
-            break;
-
-        }
-
-      }
-    }
-    return customer;
-  
+  if(contact.custom_fields[0].value === null){
+   return `${getPlaceHolder(contact.first_name)} ${getPlaceHolder(contact.last_name)}` 
   }
+  else{
+    return contact.custom_fields[0].value;
+
+  }  
+}
   
   

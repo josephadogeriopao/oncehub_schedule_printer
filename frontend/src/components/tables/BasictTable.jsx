@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, {  useRef } from "react";
 import printer from "../assets/printer.png"
 import "./table.css";
 import SearchBar from "../SearchBar/SearchBar";
@@ -12,26 +12,21 @@ import {
 } from "@tanstack/react-table";
 import { columnDef } from "./columns";
 import { getSortIconHandler } from "../../utils/getSortIconHandler";
-import useResults from "../../hooks/useResults";
-import { useReactToPrint, ReactToPrint } from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 const BasicTable = ({dataJSON}) => {
-  const finalData = React.useMemo(() => dataJSON, []);
+  const finalData = React.useMemo(() => dataJSON, [dataJSON]);
   const finalColumnDef = React.useMemo(() => columnDef, []);
   const [sorting, setSorting] = React.useState([]);
   const [filtering, setFiltering] = React.useState("");
   const [columnFilters, setColumnFilters] = React.useState([]);
-  const [searchApi, results, errorMessage] = useResults();
-  const conponentPDF= useRef();
+  const conponentPDF= useRef(null);
 
   const generatePDF= useReactToPrint({
-    content: ()=>conponentPDF.current,
-    //documentTitle:"OnceHub Appointment Schedule",
+    contentRef: conponentPDF,
+    documentTitle:"OnceHub Appointment Schedule",
     onAfterPrint:()=>alert("Data saved in PDF")
 });
-
-
-console.log(JSON.stringify(generatePDF));
 
 
   const tableInstance = useReactTable({
@@ -63,7 +58,7 @@ console.log(JSON.stringify(generatePDF));
     
 <span>
 <div style={{flexDirection : "row",display :"flex"}}>
-  <div ref={conponentPDF}>
+  <div >
     one two
   </div>
       <SearchBar
@@ -78,7 +73,7 @@ console.log(JSON.stringify(generatePDF));
     
     </div>
     </span>
-    <div  >
+    <div ref={conponentPDF} >
       <table>
         <thead>
           {tableInstance.getHeaderGroups().map((headerEl) => {
