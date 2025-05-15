@@ -42,7 +42,7 @@ function App() {
             fetch data
 
           </button>
-          <DatePicker selected={date} onChange={(date) => setDate(date)} />
+          <DatePicker selected={date} onChange={(date) => setDate(date)} isClearable dropdownMode="scroll" startOpen showPopperArrow />
 
           {data?
           <BasicTable dataJSON={data}/> :<></>

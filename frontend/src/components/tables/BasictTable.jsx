@@ -1,5 +1,7 @@
 import React, {  useRef } from "react";
 import printer from "../assets/printer.png"
+import csvIcon from "../assets/csv.png"
+
 import "./table.css";
 import SearchBar from "../SearchBar/SearchBar";
 import {
@@ -13,6 +15,8 @@ import {
 import { columnDef } from "./columns";
 import { getSortIconHandler } from "../../utils/getSortIconHandler";
 import { useReactToPrint } from "react-to-print";
+import { CSVLink } from "react-csv"
+import { csvHeaders } from "../../data/csvHeaders";
 
 const BasicTable = ({dataJSON}) => {
   const finalData = React.useMemo(() => dataJSON, [dataJSON]);
@@ -36,10 +40,15 @@ const BasicTable = ({dataJSON}) => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    enableColumnResizing: true,
+    debugTable: true,
+    debugHeaders: true,
+    debugColumns: true,    columnResizeMode: 'onChange', // Enable real-time resizing
     state: {
       sorting: sorting,
       globalFilter: filtering,
       columnFilters: columnFilters,
+      
 
     },
     onSortingChange: setSorting,
@@ -70,6 +79,15 @@ const BasicTable = ({dataJSON}) => {
              <div onClick={generatePDF} >
              <img src={printer} style={{ width:75, height : 50}} alt="printer" />
              </div>
+             <div onClick={()=>{alert("download csv")}} >
+             <i src={csvIcon} style={{ width:75, height : 50}} alt="csv Icon" >
+              
+             </i>
+             </div>
+          
+             <CSVLink style={{ width:75, height : 50}} src={csvIcon} data={tableInstance.getRowModel().rows} headers={csvHeaders} filename="my-data.csv">
+             <img src={csvIcon} style={{ width:75, height : 50}} alt="csv Icon" />
+             </CSVLink>
     
     </div>
     </span>
@@ -81,7 +99,8 @@ const BasicTable = ({dataJSON}) => {
               <tr key={headerEl.id}>
                 {headerEl.headers.map((columnEl) => {
                   return (
-                    <th key={columnEl.id} colSpan={columnEl.colSpan}>
+                    <th key={columnEl.id} colSpan={columnEl.colSpan}  onMouseDown={columnEl.getResizeHandler()} 
+                        onDoubleClick={columnEl.getResizeHandler()} style={{ position:"relative",width:columnEl.getSize() ,}}>
                       {columnEl.isPlaceholder
                         ? null
                         : flexRender(
@@ -101,6 +120,17 @@ const BasicTable = ({dataJSON}) => {
                       
    
                          </i>
+
+                         {columnEl.column.getCanResize() && (
+                      <div
+                        onMouseDown={columnEl.getResizeHandler()}
+                        onTouchStart={columnEl.getResizeHandler()}
+                        className={`resizer ${
+                          columnEl.column.getIsResizing() ? 'isResizing' : ''
+                        }`}
+                      ></div>
+                    )}
+                         
                     </th>
                   );
                 })}
@@ -188,7 +218,8 @@ const BasicTable = ({dataJSON}) => {
       {/* {JSON.stringify(tableInstance.getSelectedRowModel().flatRows.length)} */}
      <div>
        {/* THIS PART OF THE CODE SHOWS THE TOTAL NUMBER OF ROWS TO BE EXPORTED  */}
-      final data to export =={JSON.stringify(tableInstance.getRowModel().rows.length, null,4)}
+      {/* <div>{JSON.stringify(tableInstance.getRowModel().rows, null,4)}</div> */}
+      <div>{JSON.stringify(tableInstance.getRowModel().rows, null, 4)}</div>
      </div>
     </>
   );
