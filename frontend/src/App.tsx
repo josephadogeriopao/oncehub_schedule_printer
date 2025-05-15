@@ -42,7 +42,12 @@ function App() {
             fetch data
 
           </button>
-          <DatePicker selected={date} onChange={(date) => setDate(date)} isClearable dropdownMode="scroll" startOpen showPopperArrow />
+          <DatePicker selected={date} onChange={(date) => setDate(date)} 
+                      isClearable dropdownMode="scroll" startOpen showPopperArrow showTimeSelect
+                       minTime={new Date(0, 0, 0, 9, 30)} maxTime={new Date(0, 0, 0, 16, 0)}
+                       dateFormat="MM-dd-yyyy h:mm aa" timeIntervals={15}
+                      
+                      />
 
           {data?
           <BasicTable dataJSON={data}/> :<></>
