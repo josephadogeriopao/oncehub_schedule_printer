@@ -7,7 +7,7 @@ const getCST = (upt : string) => {
     m.tz('America/Chicago');
     
     // format output however you desire
-    let cst = m.format("YYYY-MM-DD HH:mm:ss A");
+    let cst = m.format("MM-DD-YYYY h:mm A");
     return cst
 }
 

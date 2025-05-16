@@ -1,6 +1,8 @@
 import React, {  useRef } from "react";
 import printer from "../assets/printer.png"
 import csvIcon from "../assets/csv.png"
+import { getUpdatedCSVData } from "../../utils/getUpdatedCSVData";
+import Loader from "../Loader";
 
 import "./table.css";
 import SearchBar from "../SearchBar/SearchBar";
@@ -29,7 +31,7 @@ const BasicTable = ({dataJSON}) => {
   const generatePDF= useReactToPrint({
     contentRef: conponentPDF,
     documentTitle:"OnceHub Appointment Schedule",
-    onAfterPrint:()=>alert("Data saved in PDF")
+    //onAfterPrint:()=>alert("Data saved in PDF")
 });
 
 
@@ -55,21 +57,13 @@ const BasicTable = ({dataJSON}) => {
     onGlobalFilterChanged: setFiltering,
     onColumnFiltersChange: setColumnFilters,
   });
-  React.useEffect(() => {
-    console.log(tableInstance.getState().columnFilters);
-  });
-
-
-  //   console.log("test", tableInstance.getHeaderGroups());
 
   return (
     <>
     
 <span>
 <div style={{flexDirection : "row",display :"flex"}}>
-  <div >
-    one two
-  </div>
+
       <SearchBar
       value={filtering}
       placeholder="Search ..."
@@ -85,7 +79,7 @@ const BasicTable = ({dataJSON}) => {
              </i>
              </div>
           
-             <CSVLink style={{ width:75, height : 50}} src={csvIcon} data={tableInstance.getRowModel().rows} headers={csvHeaders} filename="my-data.csv">
+             <CSVLink style={{ width:75, height : 50}} src={csvIcon} data={getUpdatedCSVData(tableInstance.getCoreRowModel().rows)} headers={csvHeaders} filename="my-data.csv">
              <img src={csvIcon} style={{ width:75, height : 50}} alt="csv Icon" />
              </CSVLink>
     
@@ -219,7 +213,14 @@ const BasicTable = ({dataJSON}) => {
      <div>
        {/* THIS PART OF THE CODE SHOWS THE TOTAL NUMBER OF ROWS TO BE EXPORTED  */}
       {/* <div>{JSON.stringify(tableInstance.getRowModel().rows, null,4)}</div> */}
-      <div>{JSON.stringify(tableInstance.getRowModel().rows, null, 4)}</div>
+      <div>{JSON.stringify(tableInstance.getCoreRowModel().rows.length, null, 4)}</div>
+
+      <div>{JSON.stringify(tableInstance.getCoreRowModel().rows[0], null, 6)}</div>
+
+      {/* <div>{JSON.stringify(JSON.stringify(tableInstance.), null, 4)}</div> */}
+
+
+      {/* <div>{JSON.stringify(tableInstance.getRowModel().rows, null, 4)}</div> */}
      </div>
     </>
   );
