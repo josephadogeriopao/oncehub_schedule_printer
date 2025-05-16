@@ -16,7 +16,6 @@ const DropDownSelect = ({
           <option value="requested">Requested</option>
         </select>
       </label>
-      <p>Selected value: {selectedValue}</p>
     </div>
   );
 }
